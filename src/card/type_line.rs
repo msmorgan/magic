@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use std::fmt;
 use std::str::FromStr;
 
-use type_::*;
+use type_::{Type, Subtype, Supertype};
 
 const EM_DASH: &'static str = "—";
 
@@ -225,6 +225,7 @@ macro_rules! type_line {
                     PlanarType::*,
                     LandType::*,
                     PlaneswalkerType::*,
+                    IntoSubtype,
                 };
 
                 $(
