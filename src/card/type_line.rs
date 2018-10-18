@@ -202,6 +202,40 @@ impl FromStr for TypeLine {
 impl_deserialize_with_fromstr!(TypeLine);
 impl_serialize_with_tostring!(TypeLine);
 
+macro_rules! type_line {
+    ($($supertype:ident)* ; $($type_:ident)* ; $($subtype:ident)*) => {
+        {
+            let mut type_line = TypeLine::new();
+
+            $(
+                type_line.add_supertype($crate::type_::Supertype::$supertype);
+            )*
+
+            $(
+                type_line.add_type($crate::type_::Type::$type_);
+            )*
+
+            {
+                use $crate::type_::{
+                    CreatureType::*,
+                    ArtifactType::*,
+                    EnchantmentType::*,
+                    SpellType::*,
+                    PlanarType::*,
+                    LandType::*,
+                    PlaneswalkerType::*,
+                };
+
+                $(
+                    type_line.add_subtype($subtype.into_subtype());
+                )*
+            }
+
+            type_line
+        }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -219,6 +253,12 @@ mod tests {
         let string = format!("Legendary Creature {} Merfolk Wizard", EM_DASH);
 
         (type_line, string)
+    }
+
+    #[test]
+    fn type_line_macro() {
+        let type_line = type_line!(Legendary; Enchantment Creature; Human Wizard);
+        assert_eq!(type_line.to_string(), format!("Legendary Enchantment Creature {} Human Wizard", EM_DASH));
     }
 
     #[test]

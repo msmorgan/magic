@@ -71,6 +71,20 @@ impl Subtype {
     }
 }
 
+pub trait IntoSubtype {
+    fn into_subtype(self) -> Subtype;
+}
+
+macro_rules! impl_into_subtype {
+    ($ty:ty, $variant:ident) => {
+        impl IntoSubtype for $ty {
+            fn into_subtype(self) -> Subtype {
+                Subtype::$variant(self)
+            }
+        }
+    };
+}
+
 /// Artifact subtypes (205.3g)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ArtifactType {
@@ -85,6 +99,8 @@ pub enum ArtifactType {
 impl_display_with_serialize!(ArtifactType);
 impl_fromstr_with_deserialize!(ArtifactType);
 
+impl_into_subtype!(ArtifactType, Artifact);
+
 /// Enchantment subtypes (205.3h)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum EnchantmentType {
@@ -97,6 +113,8 @@ pub enum EnchantmentType {
 
 impl_display_with_serialize!(EnchantmentType);
 impl_fromstr_with_deserialize!(EnchantmentType);
+
+impl_into_subtype!(EnchantmentType, Enchantment);
 
 /// Land subtypes (205.3i)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -118,6 +136,8 @@ pub enum LandType {
 
 impl_display_with_serialize!(LandType);
 impl_fromstr_with_deserialize!(LandType);
+
+impl_into_subtype!(LandType, Land);
 
 /// Planeswalker subtypes (205.3j)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -174,6 +194,8 @@ pub enum PlaneswalkerType {
 impl_display_with_serialize!(PlaneswalkerType);
 impl_fromstr_with_deserialize!(PlaneswalkerType);
 
+impl_into_subtype!(PlaneswalkerType, Planeswalker);
+
 /// Instant and sorcery subtypes (205.3k)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SpellType {
@@ -183,6 +205,8 @@ pub enum SpellType {
 
 impl_display_with_serialize!(SpellType);
 impl_fromstr_with_deserialize!(SpellType);
+
+impl_into_subtype!(SpellType, Spell);
 
 /// Creature and tribal subtypes (205.3m)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -433,6 +457,8 @@ pub enum CreatureType {
 impl_display_with_serialize!(CreatureType);
 impl_fromstr_with_deserialize!(CreatureType);
 
+impl_into_subtype!(CreatureType, Creature);
+
 /// Plane types (205.3n)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PlanarType {
@@ -483,6 +509,8 @@ pub enum PlanarType {
 
 impl_display_with_serialize!(PlanarType);
 impl_fromstr_with_deserialize!(PlanarType);
+
+impl_into_subtype!(PlanarType, Plane);
 
 /// Supertypes (205.4c)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
