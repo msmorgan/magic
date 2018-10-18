@@ -249,62 +249,51 @@ macro_rules! type_line {
 mod tests {
     use super::*;
 
-    fn get_type_line_data() -> (TypeLine, String) {
-        let type_line = TypeLine::from_iters(
-            [Supertype::Legendary].iter().cloned(),
-            [Type::Creature].iter().cloned(),
-            [
-                Subtype::Creature(CreatureType::Merfolk),
-                Subtype::Creature(CreatureType::Wizard),
-            ].iter().cloned(),
-        );
-
-        let string = "Legendary Creature \u{2014} Merfolk Wizard".to_string();
-
-        (type_line, string)
-    }
-
     #[test]
-    fn type_line_macro() {
-        let type_line = type_line!(Legendary; Enchantment Creature; Human Wizard);
-        assert_eq!(type_line.to_string(), "Legendary Enchantment Creature \u{2014} Human Wizard");
+    fn type_lines() {
+        let pairs = [
+            (
+                type_line!(Legendary; Enchantment Creature; God),
+                "Legendary Enchantment Creature \u{2014} God",
+            ),
+            (
+                type_line!(Artifact Creature; Construct),
+                "Artifact Creature \u{2014} Construct",
+            ),
+            (
+                type_line!(Creature; Merfolk Wizard),
+                "Creature \u{2014} Merfolk Wizard",
+            ),
+            (
+                type_line!(Land),
+                "Land",
+            ),
+            (
+                type_line!(Legendary; Planeswalker; Karn),
+                "Legendary Planeswalker \u{2014} Karn",
+            ),
+            (
+                type_line!(Enchantment; Aura Curse),
+                "Enchantment \u{2014} Aura Curse",
+            ),
+            (
+                type_line!(Basic Snow; Land; Mountain),
+                "Basic Snow Land \u{2014} Mountain",
+            ),
+            (
+                type_line!(Instant; Arcane),
+                "Instant \u{2014} Arcane",
+            ),
+            (
+                type_line!(Plane; BolassMeditationRealm),
+                "Plane \u{2014} Bolas's Meditation Realm",
+            ),
+        ];
 
-        let type_line = type_line!(Artifact Creature; Construct);
-        assert_eq!(type_line.to_string(), "Artifact Creature \u{2014} Construct");
-
-        let type_line = type_line!(Land);
-        assert_eq!(type_line.to_string(), "Land");
-    }
-
-    #[test]
-    fn serialize_type_line() {
-        let (type_line, expected) = get_type_line_data();
-        assert_eq!(type_line.to_string(), expected);
-    }
-
-    #[test]
-    fn deserialize_type_line() {
-        let (expected, string) = get_type_line_data();
-
-        assert_eq!(string.parse::<TypeLine>().unwrap(), expected);
-    }
-
-    #[test]
-    fn bolas_realm() {
-        let type_line = {
-            let mut res = TypeLine::new();
-            res.add_type(Type::Plane);
-            res.add_subtype(Subtype::Plane(PlanarType::BolassMeditationRealm));
-            res
-        };
-
-        let string = "Plane \u{2014} Bolas's Meditation Realm".to_string();
-        assert!(type_line.is_valid());
-
-        let serialized = type_line.to_string();
-        assert_eq!(serialized, string);
-
-        let deserialized = string.parse::<TypeLine>().unwrap();
-        assert_eq!(deserialized, type_line);
+        for (line, string) in pairs.iter() {
+            assert!(line.is_valid());
+            assert_eq!(line.to_string(), *string);
+            assert_eq!(string.parse::<TypeLine>().unwrap(), *line);
+        }
     }
 }
