@@ -1,4 +1,4 @@
-use serde::{ser, de};
+use serde::ser;
 use std::{error, fmt};
 
 #[derive(Debug)]
@@ -80,7 +80,7 @@ impl ser::Serializer for Serializer {
         Ok(String::new())
     }
 
-    fn serialize_unit_struct(self, name: &'static str) -> Result<String, Error> {
+    fn serialize_unit_struct(self, _name: &'static str) -> Result<String, Error> {
         Err(Error::Impossible("unit struct"))
     }
 
@@ -92,40 +92,40 @@ impl ser::Serializer for Serializer {
         value.serialize(self)
     }
 
-    fn serialize_newtype_variant<T: ?Sized>(self, name: &'static str, variant_index: u32, variant: &'static str, value: &T) -> Result<String, Error> {
+    fn serialize_newtype_variant<T: ?Sized>(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _value: &T) -> Result<String, Error> {
         Err(Error::Impossible("newtype variant"))
     }
 
-    fn serialize_seq(self, len: Option<usize>) -> Result<Self::SerializeSeq, Error> {
+    fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq, Error> {
         Err(Error::Impossible("seq"))
     }
 
-    fn serialize_tuple(self, len: usize) -> Result<Self::SerializeTuple, Error> {
+    fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Error> {
         Err(Error::Impossible("tuple"))
     }
 
-    fn serialize_tuple_struct(self, name: &'static str, len: usize) -> Result<Self::SerializeTupleStruct, Error> {
+    fn serialize_tuple_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeTupleStruct, Error> {
         Err(Error::Impossible("tuple struct"))
     }
 
-    fn serialize_tuple_variant(self, name: &'static str, variant_index: u32, variant: &'static str, len: usize) -> Result<Self::SerializeTupleVariant, Error> {
+    fn serialize_tuple_variant(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _len: usize) -> Result<Self::SerializeTupleVariant, Error> {
         Err(Error::Impossible("tuple variant"))
     }
 
-    fn serialize_map(self, len: Option<usize>) -> Result<Self::SerializeMap, Error> {
+    fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap, Error> {
         Err(Error::Impossible("map"))
     }
 
-    fn serialize_struct(self, name: &'static str, len: usize) -> Result<Self::SerializeStruct, Error> {
+    fn serialize_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeStruct, Error> {
         Err(Error::Impossible("struct"))
     }
 
-    fn serialize_struct_variant(self, name: &'static str, variant_index: u32, variant: &'static str, len: usize) -> Result<Self::SerializeStructVariant, Error> {
+    fn serialize_struct_variant(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _len: usize) -> Result<Self::SerializeStructVariant, Error> {
         Err(Error::Impossible("struct variant"))
     }
 
     #[cfg(not(any(feature = "std", feature = "alloc")))]
-    fn collect_str<T: ?Sized + ::core::fmt::Display>(self, value: &T) -> Result<String, Error> {
+    fn collect_str<T: ?Sized + ::core::fmt::Display>(self, _value: &T) -> Result<String, Error> {
         unimplemented!()
     }
 }
