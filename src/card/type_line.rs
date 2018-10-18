@@ -216,6 +216,7 @@ macro_rules! type_line {
             )*
 
             {
+                #[allow(unused_imports)]
                 use $crate::type_::{
                     CreatureType::*,
                     ArtifactType::*,
@@ -234,6 +235,14 @@ macro_rules! type_line {
             type_line
         }
     };
+
+    ($($type_:ident)* ; $($subtype:ident)*) => {
+        type_line!(; $($type_ )* ; $($subtype )*)
+    };
+
+    ($($type_:ident)*) => {
+        type_line!(; $($type_ )* ;)
+    };
 }
 
 #[cfg(test)]
@@ -250,7 +259,7 @@ mod tests {
             ].iter().cloned(),
         );
 
-        let string = format!("Legendary Creature {} Merfolk Wizard", EM_DASH);
+        let string = "Legendary Creature \u{2014} Merfolk Wizard".to_string();
 
         (type_line, string)
     }
@@ -258,7 +267,13 @@ mod tests {
     #[test]
     fn type_line_macro() {
         let type_line = type_line!(Legendary; Enchantment Creature; Human Wizard);
-        assert_eq!(type_line.to_string(), format!("Legendary Enchantment Creature {} Human Wizard", EM_DASH));
+        assert_eq!(type_line.to_string(), "Legendary Enchantment Creature \u{2014} Human Wizard");
+
+        let type_line = type_line!(Artifact Creature; Construct);
+        assert_eq!(type_line.to_string(), "Artifact Creature \u{2014} Construct");
+
+        let type_line = type_line!(Land);
+        assert_eq!(type_line.to_string(), "Land");
     }
 
     #[test]
@@ -283,7 +298,7 @@ mod tests {
             res
         };
 
-        let string = format!("Plane {} Bolas's Meditation Realm", EM_DASH);
+        let string = "Plane \u{2014} Bolas's Meditation Realm".to_string();
         assert!(type_line.is_valid());
 
         let serialized = type_line.to_string();
