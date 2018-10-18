@@ -1,4 +1,5 @@
 extern crate indexmap;
+#[macro_use] extern crate lazy_static;
 extern crate serde;
 extern crate serde_json;
 #[macro_use] extern crate serde_derive;
@@ -80,7 +81,7 @@ impl ColorIdentity {
     }
 
     pub fn add(&mut self, color: Color) {
-        self.0 |= (1 << color as u8);
+        self.0 |= 1 << color as u8;
     }
 
     pub fn remove(&mut self, color: Color) {

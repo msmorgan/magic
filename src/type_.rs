@@ -1,25 +1,3 @@
-use std::fmt;
-
-macro_rules! impl_fromstr {
-    ($($t:ty,)*) => {
-        $(
-            impl ::std::str::FromStr for $t {
-                type Err = ::serde::de::value::Error;
-
-                fn from_str(value: &str) -> Result<$t, Self::Err> {
-                    use ::serde::de::{Deserialize, IntoDeserializer};
-
-                    Self::deserialize(value.into_deserializer())
-                }
-            }
-        )*
-    };
-
-    ($($t:ty),*) => {
-        impl_fromstr!($($t,)*);
-    };
-}
-
 /// Types (205.2a)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Type {
