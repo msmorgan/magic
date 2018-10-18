@@ -297,4 +297,17 @@ mod tests {
             assert_eq!(string.parse::<TypeLine>().unwrap(), *line);
         }
     }
+
+    #[test]
+    fn invalid_type_lines() {
+        let lines = [
+            type_line!(Artifact; Human),
+            type_line!(Enchantment Creature; Jace),
+            type_line!(Legendary Snow; Land; Curse),
+        ];
+
+        for line in lines.iter() {
+            assert!(!line.is_valid());
+        }
+    }
 }
