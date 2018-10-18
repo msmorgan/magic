@@ -1,5 +1,5 @@
-use mana::ManaCost;
-use super::{Color, ColorIdentity};
+use mana::{ManaCost, ConvertedManaCost};
+use super::ColorIdentity;
 
 mod type_line;
 
@@ -19,6 +19,13 @@ pub struct CardData {
     type_line: TypeLine,
     power_toughness: Option<(Power, Toughness)>,
     loyalty: Option<Loyalty>,
+}
+
+
+impl ConvertedManaCost for CardData {
+    fn converted_mana_cost(&self) -> usize {
+        self.mana_cost.converted_mana_cost()
+    }
 }
 
 pub enum Card {
