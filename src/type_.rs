@@ -1,3 +1,5 @@
+use serde_derive::{Deserialize, Serialize};
+
 /// Types (205.2a)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Type {

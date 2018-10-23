@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use std::fmt;
 use std::str::FromStr;
 
-use type_::{Subtype, Supertype, Type};
+use crate::type_::{Subtype, Supertype, Type};
 
 const EM_DASH: &'static str = "—";
 

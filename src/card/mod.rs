@@ -1,5 +1,5 @@
 use super::ColorIdentity;
-use mana::{ConvertedManaCost, ManaCost};
+use crate::mana::{ConvertedManaCost, ManaCost};
 
 mod type_line;
 
