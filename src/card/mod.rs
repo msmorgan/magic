@@ -1,5 +1,5 @@
-use mana::{ManaCost, ConvertedManaCost};
 use super::ColorIdentity;
+use mana::{ConvertedManaCost, ManaCost};
 
 mod type_line;
 
@@ -21,7 +21,6 @@ pub struct CardData {
     loyalty: Option<Loyalty>,
 }
 
-
 impl ConvertedManaCost for CardData {
     fn converted_mana_cost(&self) -> usize {
         self.mana_cost.converted_mana_cost()
@@ -42,5 +41,5 @@ pub enum Card {
     DoubleFaced {
         front: CardData,
         back: CardData,
-    }
+    },
 }

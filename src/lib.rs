@@ -1,10 +1,13 @@
 extern crate indexmap;
-#[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate lazy_static;
 extern crate serde;
 extern crate serde_json;
-#[macro_use] extern crate serde_derive;
+#[macro_use]
+extern crate serde_derive;
 
-#[cfg(not(any(feature = "std", feature = "alloc")))] extern crate core;
+#[cfg(not(any(feature = "std", feature = "alloc")))]
+extern crate core;
 
 #[macro_use]
 mod macros;

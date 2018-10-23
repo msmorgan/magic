@@ -106,10 +106,12 @@ pub enum LandType {
     Mine,
     Mountain,
     Plains,
-    #[serde(rename = "Power-Plant")] PowerPlant,
+    #[serde(rename = "Power-Plant")]
+    PowerPlant,
     Swamp,
     Tower,
-    #[serde(rename = "Urza's")] Urzas,
+    #[serde(rename = "Urza's")]
+    Urzas,
 }
 
 impl_display_with_serialize!(LandType);
@@ -199,7 +201,8 @@ pub enum CreatureType {
     Archon,
     Artificer,
     Assassin,
-    #[serde(rename = "Assembly-Worker")] AssemblyWorker,
+    #[serde(rename = "Assembly-Worker")]
+    AssemblyWorker,
     Atog,
     Aurochs,
     Avatar,
@@ -444,7 +447,8 @@ pub enum PlanarType {
     Arkhos,
     Azgol,
     Belenon,
-    #[serde(rename = "Bolas's Meditation Realm")] BolassMeditationRealm,
+    #[serde(rename = "Bolas's Meditation Realm")]
+    BolassMeditationRealm,
     Dominaria,
     Equilor,
     Ergamon,
@@ -466,7 +470,8 @@ pub enum PlanarType {
     Moag,
     Mongseng,
     Muraganda,
-    #[serde(rename = "New Phyrexia")] NewPhyrexia,
+    #[serde(rename = "New Phyrexia")]
+    NewPhyrexia,
     Phyrexia,
     Pyrulea,
     Rabiah,
@@ -474,7 +479,8 @@ pub enum PlanarType {
     Ravnica,
     Regatha,
     Segovia,
-    #[serde(rename = "Serra's Realm")] SerrasRealm,
+    #[serde(rename = "Serra's Realm")]
+    SerrasRealm,
     Shadowmoor,
     Shandalar,
     Ulgrotha,
@@ -554,21 +560,33 @@ mod tests {
 
     #[test]
     fn subtype_to_string() {
-        assert_eq!(Subtype::Creature(CreatureType::Merfolk).to_string(), "Merfolk");
+        assert_eq!(
+            Subtype::Creature(CreatureType::Merfolk).to_string(),
+            "Merfolk"
+        );
     }
 
     #[test]
     fn subtype_parse() {
-        assert_eq!(Subtype::Land(LandType::Mountain), "Mountain".parse::<Subtype>().unwrap());
+        assert_eq!(
+            Subtype::Land(LandType::Mountain),
+            "Mountain".parse::<Subtype>().unwrap()
+        );
     }
 
     #[test]
     fn bolas_realm_json() {
-        assert_eq!(serde_json::to_string(&PlanarType::BolassMeditationRealm).unwrap(), "\"Bolas's Meditation Realm\"");
+        assert_eq!(
+            serde_json::to_string(&PlanarType::BolassMeditationRealm).unwrap(),
+            "\"Bolas's Meditation Realm\""
+        );
     }
 
     #[test]
     fn bolas_realm_to_string() {
-        assert_eq!(PlanarType::BolassMeditationRealm.to_string(), "Bolas's Meditation Realm");
+        assert_eq!(
+            PlanarType::BolassMeditationRealm.to_string(),
+            "Bolas's Meditation Realm"
+        );
     }
 }

@@ -1,7 +1,7 @@
 use super::Color;
 
-use std::iter::FromIterator;
 use std::fmt;
+use std::iter::FromIterator;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ManaSymbol {
@@ -53,16 +53,20 @@ impl fmt::Display for ManaSymbol {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::ManaSymbol::*;
 
-        write!(f, "{{{}}}", match *self {
-            Generic(n) => n.to_string(),
-            Color(None) => "C".to_string(),
-            Color(Some(c)) => c.initial().to_string(),
-            Variable => "X".to_string(),
-            Hybrid(c1, c2) => format!("{}/{}", c1.initial(), c2.initial()),
-            MonoHybrid(c) => format!("{}/2", c.initial()),
-            Phyrexian(c) => format!("{}/P", c.initial()),
-            Snow => "S".to_string(),
-        })
+        write!(
+            f,
+            "{{{}}}",
+            match *self {
+                Generic(n) => n.to_string(),
+                Color(None) => "C".to_string(),
+                Color(Some(c)) => c.initial().to_string(),
+                Variable => "X".to_string(),
+                Hybrid(c1, c2) => format!("{}/{}", c1.initial(), c2.initial()),
+                MonoHybrid(c) => format!("{}/2", c.initial()),
+                Phyrexian(c) => format!("{}/P", c.initial()),
+                Snow => "S".to_string(),
+            }
+        )
     }
 }
 
@@ -92,15 +96,21 @@ pub struct ManaCost {
 }
 
 impl FromIterator<ManaSymbol> for ManaCost {
-    fn from_iter<T>(iter: T)  -> ManaCost
-        where T: IntoIterator<Item = ManaSymbol> {
-        ManaCost { symbols: Vec::from_iter(iter) }
+    fn from_iter<T>(iter: T) -> ManaCost
+    where
+        T: IntoIterator<Item = ManaSymbol>,
+    {
+        ManaCost {
+            symbols: Vec::from_iter(iter),
+        }
     }
 }
 
 impl fmt::Display for ManaCost {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&String::from_iter(self.symbols.iter().map(ToString::to_string)))
+        f.write_str(&String::from_iter(
+            self.symbols.iter().map(ToString::to_string),
+        ))
     }
 }
 
@@ -112,8 +122,8 @@ impl ConvertedManaCost for ManaCost {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use self::Color::*;
+    use super::*;
 
     #[test]
     fn mana_symbol_to_string() {

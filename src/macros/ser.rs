@@ -84,15 +84,30 @@ impl ser::Serializer for Serializer {
         Err(Error::Impossible("unit struct"))
     }
 
-    fn serialize_unit_variant(self, _name: &'static str, _variant_index: u32, variant: &'static str) -> Result<String, Error> {
+    fn serialize_unit_variant(
+        self,
+        _name: &'static str,
+        _variant_index: u32,
+        variant: &'static str,
+    ) -> Result<String, Error> {
         Ok(variant.to_string())
     }
 
-    fn serialize_newtype_struct<T: ?Sized + ser::Serialize>(self, _name: &'static str, value: &T) -> Result<String, Error> {
+    fn serialize_newtype_struct<T: ?Sized + ser::Serialize>(
+        self,
+        _name: &'static str,
+        value: &T,
+    ) -> Result<String, Error> {
         value.serialize(self)
     }
 
-    fn serialize_newtype_variant<T: ?Sized>(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _value: &T) -> Result<String, Error> {
+    fn serialize_newtype_variant<T: ?Sized>(
+        self,
+        _name: &'static str,
+        _variant_index: u32,
+        _variant: &'static str,
+        _value: &T,
+    ) -> Result<String, Error> {
         Err(Error::Impossible("newtype variant"))
     }
 
@@ -104,11 +119,21 @@ impl ser::Serializer for Serializer {
         Err(Error::Impossible("tuple"))
     }
 
-    fn serialize_tuple_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeTupleStruct, Error> {
+    fn serialize_tuple_struct(
+        self,
+        _name: &'static str,
+        _len: usize,
+    ) -> Result<Self::SerializeTupleStruct, Error> {
         Err(Error::Impossible("tuple struct"))
     }
 
-    fn serialize_tuple_variant(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _len: usize) -> Result<Self::SerializeTupleVariant, Error> {
+    fn serialize_tuple_variant(
+        self,
+        _name: &'static str,
+        _variant_index: u32,
+        _variant: &'static str,
+        _len: usize,
+    ) -> Result<Self::SerializeTupleVariant, Error> {
         Err(Error::Impossible("tuple variant"))
     }
 
@@ -116,11 +141,21 @@ impl ser::Serializer for Serializer {
         Err(Error::Impossible("map"))
     }
 
-    fn serialize_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeStruct, Error> {
+    fn serialize_struct(
+        self,
+        _name: &'static str,
+        _len: usize,
+    ) -> Result<Self::SerializeStruct, Error> {
         Err(Error::Impossible("struct"))
     }
 
-    fn serialize_struct_variant(self, _name: &'static str, _variant_index: u32, _variant: &'static str, _len: usize) -> Result<Self::SerializeStructVariant, Error> {
+    fn serialize_struct_variant(
+        self,
+        _name: &'static str,
+        _variant_index: u32,
+        _variant: &'static str,
+        _len: usize,
+    ) -> Result<Self::SerializeStructVariant, Error> {
         Err(Error::Impossible("struct variant"))
     }
 

@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use std::fmt;
 use std::str::FromStr;
 
-use type_::{Type, Subtype, Supertype};
+use type_::{Subtype, Supertype, Type};
 
 const EM_DASH: &'static str = "—";
 
@@ -22,12 +22,11 @@ impl TypeLine {
         }
     }
 
-    pub fn from_iters<Sup, T, Sub>(supertypes: Sup, types: T, subtypes: Sub) -> TypeLine
-    where
-        Sup: IntoIterator<Item = Supertype>,
-        T: IntoIterator<Item = Type>,
-        Sub: IntoIterator<Item = Subtype>,
-    {
+    pub fn from_iters<Sup, T, Sub>(
+        supertypes: impl IntoIterator<Item = Supertype>,
+        types: impl IntoIterator<Item = Type>,
+        subtypes: impl IntoIterator<Item = Subtype>,
+    ) -> TypeLine {
         use std::iter::FromIterator;
 
         TypeLine {
@@ -137,7 +136,8 @@ impl FromStr for TypeLine {
 
         // pre dash
         {
-            let mut parts = halves.next()
+            let mut parts = halves
+                .next()
                 .unwrap_or("")
                 .split_whitespace()
                 .filter(|s| !s.is_empty());
@@ -174,8 +174,7 @@ impl FromStr for TypeLine {
                 if let Ok(subtype) = post_dash.parse::<Subtype>() {
                     type_line.add_subtype(subtype);
                 } else {
-                    let mut parts = post_dash.split_whitespace()
-                        .filter(|s| !s.is_empty());
+                    let mut parts = post_dash.split_whitespace().filter(|s| !s.is_empty());
 
                     let mut current = parts.next();
 
@@ -265,10 +264,7 @@ mod tests {
                 type_line!(Creature; Merfolk Wizard),
                 "Creature \u{2014} Merfolk Wizard",
             ),
-            (
-                type_line!(Land),
-                "Land",
-            ),
+            (type_line!(Land), "Land"),
             (
                 type_line!(Legendary; Planeswalker; Karn),
                 "Legendary Planeswalker \u{2014} Karn",
@@ -281,10 +277,7 @@ mod tests {
                 type_line!(Basic Snow; Land; Mountain),
                 "Basic Snow Land \u{2014} Mountain",
             ),
-            (
-                type_line!(Instant; Arcane),
-                "Instant \u{2014} Arcane",
-            ),
+            (type_line!(Instant; Arcane), "Instant \u{2014} Arcane"),
             (
                 type_line!(Plane; BolassMeditationRealm),
                 "Plane \u{2014} Bolas's Meditation Realm",
