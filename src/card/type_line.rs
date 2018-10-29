@@ -4,7 +4,7 @@ use std::str::FromStr;
 
 use crate::type_::{Subtype, Supertype, Type};
 
-const EM_DASH: &str = "—";
+const EM_DASH: char = '\u{2014}';
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TypeLine {
@@ -90,23 +90,22 @@ impl TypeLine {
 
 impl fmt::Display for TypeLine {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let subtypes_len = self.subtypes.len();
-        let subtypes_len = if subtypes_len > 0 {
-            subtypes_len + 1
-        } else {
-            0
-        };
-
-        let mut parts = Vec::with_capacity(self.supertypes.len() + self.types.len() + subtypes_len);
-
-        parts.extend(self.supertypes.iter().map(ToString::to_string));
-        parts.extend(self.types.iter().map(ToString::to_string));
-        if subtypes_len > 0 {
-            parts.push(EM_DASH.to_string()); // em dash
-            parts.extend(self.subtypes.iter().map(ToString::to_string));
+        for supertype in self.supertypes.iter() {
+            write!(f, "{} ", supertype)?;
         }
 
-        f.write_str(&parts.join(" "))
+        for (i, type_) in self.types.iter().enumerate() {
+            write!(f, "{}{}", if i > 0 { " " } else { "" }, type_)?;
+        }
+
+        if self.subtypes.len() > 0 {
+            write!(f, " {}", EM_DASH)?;
+        }
+        for subtype in self.subtypes.iter() {
+            write!(f, " {}", subtype)?;
+        }
+
+        Ok(())
     }
 }
 
