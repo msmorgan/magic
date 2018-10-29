@@ -1,9 +1,10 @@
-use super::Color;
-
+use std::collections::HashMap;
 use std::fmt;
 use std::iter::FromIterator;
 
-#[derive(Debug, Copy, Clone)]
+use super::Color;
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum ManaSymbol {
     Generic(usize),
     Color(Option<Color>),
@@ -90,10 +91,53 @@ impl ConvertedManaCost for ManaSymbol {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ManaCost {
     symbols: Vec<ManaSymbol>,
 }
+
+#[derive(Default, PartialEq, Eq)]
+struct ManaCostComparator {
+    generic: usize,
+    variable: usize,
+    snow: usize,
+    colors: HashMap<Option<Color>, usize>,
+    hybrids: HashMap<(Color, Option<Color>), usize>,
+    phyrexian: HashMap<Color, usize>,
+}
+
+impl ManaCostComparator {
+    fn new(mana_cost: &ManaCost) -> Self {
+        let mut res = ManaCostComparator {
+            ..Default::default()
+        };
+
+        for symbol in mana_cost.symbols.iter() {
+            match *symbol {
+                ManaSymbol::Generic(n) => res.generic += n,
+                ManaSymbol::Color(c) => *res.colors.entry(c).or_insert(0) += 1,
+                ManaSymbol::Variable => res.variable += 1,
+                ManaSymbol::Hybrid(c1, c2) => {
+                    let (c1, c2) = Color::color_pie_order(c1, c2);
+                    *res.hybrids.entry((c1, Some(c2))).or_insert(0) += 1;
+                }
+                ManaSymbol::MonoHybrid(c) => *res.hybrids.entry((c, None)).or_insert(0) += 1,
+                ManaSymbol::Phyrexian(c) => *res.phyrexian.entry(c).or_insert(0) += 1,
+                ManaSymbol::Snow => res.snow += 1,
+            }
+        }
+
+        res
+    }
+}
+
+impl PartialEq for ManaCost {
+    fn eq(&self, other: &Self) -> bool {
+        ManaCostComparator::new(self) == ManaCostComparator::new(other)
+    }
+}
+
+impl Eq for ManaCost {}
 
 impl FromIterator<ManaSymbol> for ManaCost {
     fn from_iter<T>(iter: T) -> ManaCost
