@@ -4,9 +4,9 @@ use std::str::FromStr;
 
 use crate::type_::{Subtype, Supertype, Type};
 
-const EM_DASH: &'static str = "—";
+const EM_DASH: &str = "—";
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TypeLine {
     supertypes: IndexSet<Supertype>,
     types: IndexSet<Type>,
@@ -14,19 +14,15 @@ pub struct TypeLine {
 }
 
 impl TypeLine {
-    pub fn new() -> TypeLine {
-        TypeLine {
-            supertypes: IndexSet::new(),
-            types: IndexSet::new(),
-            subtypes: IndexSet::new(),
-        }
+    pub fn new() -> Self {
+        Default::default()
     }
 
-    pub fn from_iters<Sup, T, Sub>(
+    pub fn from_iters(
         supertypes: impl IntoIterator<Item = Supertype>,
         types: impl IntoIterator<Item = Type>,
         subtypes: impl IntoIterator<Item = Subtype>,
-    ) -> TypeLine {
+    ) -> Self {
         use std::iter::FromIterator;
 
         TypeLine {
