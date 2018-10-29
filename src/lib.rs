@@ -36,12 +36,10 @@ impl Color {
         let c = (color1 as u8, color2 as u8);
         if c.0 > c.1 {
             Color::color_pie_order(color2, color1)
-        } else {
-            if c.1 - c.0 > 2 {
+        } else if c.1 - c.0 > 2 {
                 (color2, color1)
-            } else {
-                (color1, color2)
-            }
+        } else {
+            (color1, color2)
         }
     }
 
@@ -58,16 +56,16 @@ impl Color {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 pub struct ColorIdentity(u8);
 
 impl ColorIdentity {
     pub fn new() -> ColorIdentity {
-        ColorIdentity(0)
+        Default::default()
     }
 
     pub fn is_colorless(self) -> bool {
-        self.0 & 0b00011111 == 0
+        self.0.trailing_zeros() >= 5
     }
 
     pub fn has(self, color: Color) -> bool {
