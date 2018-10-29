@@ -10,7 +10,7 @@ pub mod type_;
 use std::fmt;
 use std::iter::FromIterator;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Color {
     White,
     Blue,
@@ -21,12 +21,14 @@ pub enum Color {
 
 impl Color {
     pub fn iterator() -> impl Iterator<Item = Color> {
+        use self::Color::*;
+
         const COLORS: [Color; 5] = [
-            Color::White,
-            Color::Blue,
-            Color::Black,
-            Color::Red,
-            Color::Green,
+            White,
+            Blue,
+            Black,
+            Red,
+            Green,
         ];
 
         COLORS.iter().cloned()
@@ -112,6 +114,17 @@ impl fmt::Display for ColorIdentity {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_color_enum_sanity() {
+        use self::Color::*;
+
+        assert_eq!(White as u8, 0);
+        assert_eq!(Blue as u8, 1);
+        assert_eq!(Black as u8, 2);
+        assert_eq!(Red as u8, 3);
+        assert_eq!(Green as u8, 4);
+    }
 
     #[test]
     fn test_color_identity() {
