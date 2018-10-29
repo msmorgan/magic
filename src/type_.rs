@@ -38,7 +38,7 @@ impl_display_with_serialize!(Subtype);
 impl_fromstr_with_deserialize!(Subtype);
 
 impl Subtype {
-    pub fn valid_for(&self, type_: Type) -> bool {
+    pub fn valid_for(self, type_: Type) -> bool {
         match self {
             Subtype::Artifact(_) => type_ == Type::Artifact,
             Subtype::Enchantment(_) => type_ == Type::Enchantment,

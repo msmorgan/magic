@@ -45,13 +45,15 @@ impl Color {
         }
     }
 
-    pub fn initial(&self) -> char {
+    pub fn initial(self) -> char {
+        use self::Color::*;
+
         match self {
-            Color::White => 'W',
-            Color::Blue => 'U',
-            Color::Black => 'B',
-            Color::Red => 'R',
-            Color::Green => 'G',
+            White => 'W',
+            Blue => 'U',
+            Black => 'B',
+            Red => 'R',
+            Green => 'G',
         }
     }
 }

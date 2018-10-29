@@ -60,7 +60,7 @@ impl Step {
         STEPS.iter().cloned()
     }
 
-    pub fn phase(&self) -> Phase {
+    pub fn phase(self) -> Phase {
         match self {
             Step::Beginning(_) => Phase::Beginning,
             Step::FirstMain => Phase::FirstMain,
@@ -70,7 +70,7 @@ impl Step {
         }
     }
 
-    pub fn has_priority(&self) -> bool {
+    pub fn has_priority(self) -> bool {
         match self {
             Step::Beginning(BeginningStep::Untap) | Step::Ending(EndingStep::Cleanup) => false,
             _ => true,
