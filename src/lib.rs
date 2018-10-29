@@ -6,6 +6,7 @@ pub mod card;
 pub mod mana;
 pub mod phase;
 pub mod type_;
+pub mod traits;
 
 use std::fmt;
 use std::iter::FromIterator;
