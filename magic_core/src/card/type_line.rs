@@ -1,8 +1,9 @@
+use crate::{
+    macros::{impl_deserialize_with_fromstr, impl_serialize_with_tostring},
+    type_::{Subtype, Supertype, Type},
+};
 use indexmap::IndexSet;
-use std::fmt;
-use std::str::FromStr;
-
-use crate::type_::{Subtype, Supertype, Type};
+use std::{fmt, str::FromStr};
 
 const EM_DASH: char = '\u{2014}';
 
@@ -196,6 +197,7 @@ impl FromStr for TypeLine {
 impl_deserialize_with_fromstr!(TypeLine);
 impl_serialize_with_tostring!(TypeLine);
 
+#[macro_export]
 macro_rules! type_line {
     ($($supertype:ident)* ; $($type_:ident)* ; $($subtype:ident)*) => {
         {
@@ -246,6 +248,7 @@ mod tests {
 
     #[test]
     fn type_lines() {
+        #[rustfmt::skip]
         let pairs = [
             (
                 type_line!(Legendary; Enchantment Creature; God),
@@ -259,7 +262,10 @@ mod tests {
                 type_line!(Creature; Merfolk Wizard),
                 "Creature \u{2014} Merfolk Wizard",
             ),
-            (type_line!(Land), "Land"),
+            (
+                type_line!(Land),
+                "Land",
+            ),
             (
                 type_line!(Legendary; Planeswalker; Karn),
                 "Legendary Planeswalker \u{2014} Karn",
@@ -272,7 +278,10 @@ mod tests {
                 type_line!(Basic Snow; Land; Mountain),
                 "Basic Snow Land \u{2014} Mountain",
             ),
-            (type_line!(Instant; Arcane), "Instant \u{2014} Arcane"),
+            (
+                type_line!(Instant; Arcane),
+                "Instant \u{2014} Arcane",
+            ),
             (
                 type_line!(Plane; BolassMeditationRealm),
                 "Plane \u{2014} Bolas's Meditation Realm",

@@ -1,0 +1,14 @@
+[package]
+name = "magic"
+version = "0.1.0"
+authors = ["Michael Morgan <michael.morgan@mind-over-data.com>"]
+edition = "2018"
+
+[dependencies]
+magic_core = { path = "../magic_core" }
+mtgjson = { path = "../mtgjson" }
+scryfall = { path = "../scryfall" }
+indexmap = "1.0.1"
+serde = { version = "1.0.79", features = ["derive"] }
+serde_json = "1.0.32"
+lazy_static = "1.1.0"

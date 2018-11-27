@@ -1,22 +1,29 @@
-#[macro_use]
-mod macros;
-
 pub mod ability;
 pub mod card;
 pub mod mana;
 pub mod phase;
-pub mod type_;
 pub mod traits;
+pub mod type_;
 
+use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::iter::FromIterator;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub mod macros {
+    pub use magic_macros::*;
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Color {
+    #[serde(rename = "W")]
     White,
+    #[serde(rename = "U")]
     Blue,
+    #[serde(rename = "B")]
     Black,
+    #[serde(rename = "R")]
     Red,
+    #[serde(rename = "G")]
     Green,
 }
 
@@ -24,13 +31,7 @@ impl Color {
     pub fn iterator() -> impl Iterator<Item = Color> {
         use self::Color::*;
 
-        const COLORS: [Color; 5] = [
-            White,
-            Blue,
-            Black,
-            Red,
-            Green,
-        ];
+        const COLORS: [Color; 5] = [White, Blue, Black, Red, Green];
 
         COLORS.iter().cloned()
     }
@@ -40,23 +41,31 @@ impl Color {
         if c.0 > c.1 {
             Color::color_pie_order(color2, color1)
         } else if c.1 - c.0 > 2 {
-                (color2, color1)
+            (color2, color1)
         } else {
             (color1, color2)
         }
     }
+}
 
-    pub fn initial(self) -> char {
+impl fmt::Display for Color {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::Color::*;
 
-        match self {
+        let initial = match *self {
             White => 'W',
             Blue => 'U',
             Black => 'B',
             Red => 'R',
             Green => 'G',
-        }
+        };
+        write!(f, "{}", initial)
     }
+}
+
+#[derive(Debug)]
+pub struct ParseColorError {
+    _priv: (),
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
@@ -104,7 +113,7 @@ impl fmt::Display for ColorIdentity {
             write!(f, "C")?;
         } else {
             for color in self.colors() {
-                write!(f, "{}", color.initial())?;
+                write!(f, "{}", color)?;
             }
         }
 

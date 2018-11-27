@@ -4,10 +4,11 @@ use std::iter::FromIterator;
 
 use super::Color;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ManaSymbol {
-    Generic(usize),
-    Color(Option<Color>),
+    Generic(u16),
+    Colored(Color),
+    Colorless,
     Variable,
     Hybrid(Color, Color),
     MonoHybrid(Color),
@@ -15,59 +16,25 @@ pub enum ManaSymbol {
     Snow,
 }
 
-impl ManaSymbol {
-    pub fn generic(amount: usize) -> ManaSymbol {
-        ManaSymbol::Generic(amount)
-    }
-
-    pub fn colorless() -> ManaSymbol {
-        ManaSymbol::Color(None)
-    }
-
-    pub fn colored(color: Color) -> ManaSymbol {
-        ManaSymbol::Color(Some(color))
-    }
-
-    pub fn variable() -> ManaSymbol {
-        ManaSymbol::Variable
-    }
-
-    pub fn hybrid(color1: Color, color2: Color) -> ManaSymbol {
-        let (color1, color2) = Color::color_pie_order(color1, color2);
-        ManaSymbol::Hybrid(color1, color2)
-    }
-
-    pub fn mono_hybrid(color: Color) -> ManaSymbol {
-        ManaSymbol::MonoHybrid(color)
-    }
-
-    pub fn snow() -> ManaSymbol {
-        ManaSymbol::Snow
-    }
-
-    pub fn phyrexian(color: Color) -> ManaSymbol {
-        ManaSymbol::Phyrexian(color)
-    }
-}
-
 impl fmt::Display for ManaSymbol {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::ManaSymbol::*;
 
-        write!(
-            f,
-            "{{{}}}",
-            match *self {
-                Generic(n) => n.to_string(),
-                Color(None) => "C".to_string(),
-                Color(Some(c)) => c.initial().to_string(),
-                Variable => "X".to_string(),
-                Hybrid(c1, c2) => format!("{}/{}", c1.initial(), c2.initial()),
-                MonoHybrid(c) => format!("{}/2", c.initial()),
-                Phyrexian(c) => format!("{}/P", c.initial()),
-                Snow => "S".to_string(),
+        write!(f, "{{")?;
+        match *self {
+            Generic(n) => write!(f, "{}", n),
+            Colored(c) => write!(f, "{}", c),
+            Colorless => write!(f, "C"),
+            Variable => write!(f, "X"),
+            Hybrid(c1, c2) => {
+                let (c1, c2) = Color::color_pie_order(c1, c2);
+                write!(f, "{}/{}", c1, c2)
             }
-        )
+            MonoHybrid(c) => write!(f, "{}/2", c),
+            Phyrexian(c) => write!(f, "{}/P", c),
+            Snow => write!(f, "S"),
+        }?;
+        write!(f, "}}")
     }
 }
 
@@ -80,8 +47,9 @@ impl ConvertedManaCost for ManaSymbol {
         use self::ManaSymbol::*;
 
         match *self {
-            Generic(n) => n,
-            Color(_) => 1,
+            Generic(n) => n as usize,
+            Colored(_) => 1,
+            Colorless => 1,
             Variable => 0,
             Hybrid(_, _) => 1,
             MonoHybrid(_) => 2,
@@ -113,17 +81,20 @@ impl ManaCostComparator {
         };
 
         for symbol in mana_cost.symbols.iter() {
+            use self::ManaSymbol::*;
+
             match *symbol {
-                ManaSymbol::Generic(n) => res.generic += n,
-                ManaSymbol::Color(c) => *res.colors.entry(c).or_insert(0) += 1,
-                ManaSymbol::Variable => res.variable += 1,
-                ManaSymbol::Hybrid(c1, c2) => {
+                Generic(n) => res.generic += n as usize,
+                Colored(c) => *res.colors.entry(Some(c)).or_insert(0) += 1,
+                Colorless => *res.colors.entry(None).or_insert(0) += 1,
+                Variable => res.variable += 1,
+                Hybrid(c1, c2) => {
                     let (c1, c2) = Color::color_pie_order(c1, c2);
                     *res.hybrids.entry((c1, Some(c2))).or_insert(0) += 1;
                 }
-                ManaSymbol::MonoHybrid(c) => *res.hybrids.entry((c, None)).or_insert(0) += 1,
-                ManaSymbol::Phyrexian(c) => *res.phyrexian.entry(c).or_insert(0) += 1,
-                ManaSymbol::Snow => res.snow += 1,
+                MonoHybrid(c) => *res.hybrids.entry((c, None)).or_insert(0) += 1,
+                Phyrexian(c) => *res.phyrexian.entry(c).or_insert(0) += 1,
+                Snow => res.snow += 1,
             }
         }
 
@@ -152,9 +123,7 @@ impl FromIterator<ManaSymbol> for ManaCost {
 
 impl fmt::Display for ManaCost {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&String::from_iter(
-            self.symbols.iter().map(ToString::to_string),
-        ))
+        self.symbols.iter().try_for_each(|s| write!(f, "{}", s))
     }
 }
 
@@ -167,21 +136,22 @@ impl ConvertedManaCost for ManaCost {
 #[cfg(test)]
 mod tests {
     use self::Color::*;
+    use self::ManaSymbol::*;
     use super::*;
 
     #[test]
     fn mana_symbol_to_string() {
-        assert_eq!(ManaSymbol::phyrexian(Blue).to_string(), "{U/P}");
-        assert_eq!(ManaSymbol::generic(0).to_string(), "{0}");
+        assert_eq!(Phyrexian(Blue).to_string(), "{U/P}");
+        assert_eq!(Generic(0).to_string(), "{0}");
     }
 
     #[test]
     fn mana_cost_to_string() {
         let cost = ManaCost::from_iter(vec![
-            ManaSymbol::generic(5),
-            ManaSymbol::colorless(),
-            ManaSymbol::colored(Green),
-            ManaSymbol::hybrid(Black, White),
+            ManaSymbol::Generic(5),
+            ManaSymbol::Colorless,
+            ManaSymbol::Colored(Green),
+            ManaSymbol::Hybrid(Black, White),
         ]);
 
         assert_eq!(cost.to_string(), "{5}{C}{G}{W/B}");

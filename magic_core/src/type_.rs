@@ -1,4 +1,6 @@
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
+
+use crate::macros::{impl_display_with_serialize, impl_fromstr_with_deserialize};
 
 /// Types (205.2a)
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -527,7 +529,8 @@ mod tests {
     "Vampire",
     "Lorwyn"
 ]
-        "#.replace(char::is_whitespace, "");
+        "#
+        .replace(char::is_whitespace, "");
 
         let subtypes = vec![
             Subtype::Artifact(ArtifactType::Clue),

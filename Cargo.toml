@@ -1,12 +1,9 @@
-[package]
-name = "magic"
-version = "0.1.0"
-authors = ["Michael Morgan <michael.morgan@mind-over-data.com>"]
-edition = "2018"
 
-[dependencies]
-indexmap = "1.0.1"
-serde = "1.0.79"
-serde_derive = "1.0.79"
-serde_json = "1.0.32"
-lazy_static = "1.1.0"
+[workspace]
+members = [
+    "magic",
+    "magic_core",
+    "magic_macros",
+    "mtgjson",
+    "scryfall",
+]

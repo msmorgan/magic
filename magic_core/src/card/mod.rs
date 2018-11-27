@@ -67,18 +67,9 @@ impl Named for Card {
     fn names(&self) -> Vec<Cow<str>> {
         match self {
             Card::Normal(card_data) => vec![card_data.name().unwrap()],
-            Card::Split { left, right, .. } => vec![
-                left.name().unwrap(),
-                right.name().unwrap(),
-            ],
-            Card::Flip { top, bottom } => vec![
-                top.name().unwrap(),
-                bottom.name().unwrap(),
-            ],
-            Card::DoubleFaced { front, back } => vec![
-                front.name().unwrap(),
-                back.name().unwrap(),
-            ],
+            Card::Split { left, right, .. } => vec![left.name().unwrap(), right.name().unwrap()],
+            Card::Flip { top, bottom } => vec![top.name().unwrap(), bottom.name().unwrap()],
+            Card::DoubleFaced { front, back } => vec![front.name().unwrap(), back.name().unwrap()],
         }
     }
 }
